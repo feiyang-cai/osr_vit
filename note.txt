@@ -1,0 +1,28 @@
+cifar 10
+classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset CIFAR10 > CIFAR10_classifier.log & disownlog & disown
+evaluate classifier and oodformer: python ./measure_oodformer.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR10 --in-num-classes 6 --out-num-classes 4
+print results: python ./evaluate.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR10 --in-num-classes 6 --out-num-classes 4
+
+detector: nohup python -u ./train_detector_batch.py --dataset CIFAR10 > CIFAR10_detector.log & disown 
+evaluate osrdetector: python ./measure_osrdetector.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR10 --in-num-classes 6 --out-num-classes 4 
+print results: python ./evaluate.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR10 --in-num-classes 6 --out-num-classes 4
+
+cifar N:
+classifier:  nohup python -u ./train_classifier_batch.py --num-classes 4 --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset CIFAR10 > CIFARN_classifier.log & disown
+detector: nohup python -u ./train_detector_batch.py --num-classes 4 --dataset CIFAR10 > CIFARN_detector.log & disown
+
+cifar+10
+evaluate classifier and oodformer: python ./measure_oodformer.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 10
+print results: python ./evaluate.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 10
+
+evaluate osrdetector: python ./measure_osrdetector.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 10
+print results: python ./evaluate.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 10
+
+cifar+50
+evaluate classifier and oodformer: python ./measure_oodformer.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 50
+print results: python ./evaluate.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 50
+
+evaluate osrdetector: python ./measure_osrdetector.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 50
+print results: python ./evaluate.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 50
+
+
