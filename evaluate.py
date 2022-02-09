@@ -35,14 +35,16 @@ def main(opt):
         if opt.exp_name == exp_name and opt.in_dataset == dataset and opt.in_num_classes == int(num_classes[2:]):
             json_dir = os.path.join(experiments_dir, dir, "results")
             for json_file in os.listdir(json_dir):
-                with open(os.path.join(json_dir, json_file)) as f:
-                    data = json.load(f)
-                    if json_file.startswith("best"):
-                        best_acc_list.append(data['in_acc'])
-                        best_auroc_list.append(data['auroc'])
-                    else:
-                        cur_acc_list.append(data['in_acc'])
-                        cur_auroc_list.append(data['auroc'])
+                _, ood_dataset, num_ood_classes = json_file.split("_")
+                if ood_dataset[3:] == opt.out_dataset and int(num_ood_classes[4:-5]) == opt.out_num_classes:
+                    with open(os.path.join(json_dir, json_file)) as f:
+                        data = json.load(f)
+                        if json_file.startswith("best"):
+                            best_acc_list.append(data['in_acc'])
+                            best_auroc_list.append(data['auroc'])
+                        else:
+                            cur_acc_list.append(data['in_acc'])
+                            cur_auroc_list.append(data['auroc'])
     
     best_acc = np.mean(best_acc_list)
     best_auroc = np.mean(best_auroc_list)
