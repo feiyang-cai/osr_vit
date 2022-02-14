@@ -1,5 +1,8 @@
+MNIST
+classifier: nohup python -u ./train_classifier_batch.py --dataset MNIST > MNIST_classifier.log & disown
+
 cifar 10
-classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset CIFAR10 > CIFAR10_classifier.log & disownlog & disown
+classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset CIFAR10 > CIFAR10_classifier.log & disown
 evaluate classifier and oodformer: python ./measure_oodformer.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR10 --in-num-classes 6 --out-num-classes 4
 print results: python ./evaluate.py --exp-name osrclassifier --in-dataset CIFAR10 --out-dataset CIFAR10 --in-num-classes 6 --out-num-classes 4
 
@@ -25,4 +28,8 @@ print results: python ./evaluate.py --exp-name osrclassifier --in-dataset CIFAR1
 evaluate osrdetector: python ./measure_osrdetector.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 50
 print results: python ./evaluate.py --exp-name osrdetector --in-dataset CIFAR10 --out-dataset CIFAR100 --in-num-classes 4 --out-num-classes 50
 
+tiny imagenet
+download and unzip the dataset: python ./src/download_tinyimagenet.py 
+classifier: nohup python -u ./train_classifier_batch.py --num-classes 20 --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset TinyImageNet > TinyImageNet_classifier.log & disown
+detector: nohup python -u ./train_detector_batch.py --num-classes 20 --dataset TinyImageNet > TinyImageNet_detector.log & disown
 

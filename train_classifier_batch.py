@@ -27,7 +27,7 @@ for seed in seeds:
     path = Path("./")
     cline = "python train_classifier.py --exp-name osrclassifier --n-gpu 4 --tensorboard --image-size 224 \
               --batch-size 256 --num-workers 16 --train-steps 4590 --lr 0.01 --wd 1e-5 --dataset {} --num-classes {} --random-seed {}".format(config.dataset, config.num_classes, seed)
-    if config.dataset != "MNIST":
-        cline += " --checkpoint-path {}".format(config.checkpoint_path)
+    #if config.dataset != "MNIST":
+    cline += " --checkpoint-path {}".format(config.checkpoint_path)
     if os.system(cline):
         raise RuntimeError('program {} failed!'.format(cline))
