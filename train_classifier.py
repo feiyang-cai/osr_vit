@@ -146,7 +146,7 @@ def main(config, device, device_ids):
     # create dataloader
     config.model = 'vit'
     random.seed(config.random_seed)
-    if config.dataset == "MNIST" or config.dataset == "CIFAR10":
+    if config.dataset == "MNIST" or config.dataset == "SVHN" or config.dataset == "CIFAR10":
         total_classes = 10
     elif config.dataset == "TinyImageNet":
         total_classes = 200

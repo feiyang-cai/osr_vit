@@ -13,6 +13,8 @@ parser.add_argument("--num-classes", type=int, default=6, help="number of classe
 config = parser.parse_args()
 if config.dataset == "MNIST":
     random_seed = 42
+elif config.dataset == "SVHN":
+    random_seed = 7
 elif config.dataset == "CIFAR10":
     random_seed = 24
 elif config.dataset == "TinyImageNet":

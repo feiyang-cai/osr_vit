@@ -44,6 +44,47 @@ def getMNISTDataset(data_path='./data', **args):
         
     return dataset
 
+def getSVHNDataset(data_path='./data', **args):
+    mean = (0.4377, 0.4438, 0.4728)
+    std = (0.1980, 0.2010, 0.1970)
+        
+    transform = transforms.Compose([
+        transforms.Resize((args['image_size'], args['image_size'])),
+        transforms.ToTensor(),
+        transforms.Normalize(mean, std),
+    ])
+
+    split = args['split']
+
+    data_split = 'train' if split=='train' else 'test'
+    dataset = datasets.SVHN(data_path, download=True, split=data_split, transform=transform)
+
+    if 'known_classes' in args:
+        known_classes = sorted(args['known_classes'])
+        known_mapping = {val:idx for idx, val in enumerate(known_classes)}
+        unknown_classes =  list(set(range(10)) -  set(known_classes))
+        unknown_classes = sorted(unknown_classes)
+        unknown_mapping = {val: idx+len(known_classes) for idx, val in enumerate(unknown_classes)}
+
+        classes = known_classes if split=='train' or split=='in_test' else unknown_classes
+        mapping = known_mapping if split=='train' or split=='in_test' else unknown_mapping
+
+        dataset.labels = np.array(dataset.labels)
+
+        idx = None
+        for i in classes:
+            if idx is None:
+                idx = (dataset.labels==i)
+            else:
+                idx |= (dataset.labels==i)
+
+        dataset.labels = dataset.labels[idx]
+        dataset.data = dataset.data[idx]
+        for idx, val in enumerate(dataset.labels):
+            dataset.labels[idx] = torch.tensor(mapping[val.item()])
+        
+    return dataset
+
 def getCIFAR10Dataset(data_path='./data', **args):
     mean = (0.4914, 0.4822, 0.4465)
     std = (0.2023, 0.1994, 0.2010)
@@ -190,13 +231,12 @@ def get_mean_and_std(dataloader):
 
 if __name__ == '__main__':
     from torch.utils.data import DataLoader
-    dataset = getTinyImageNetDataset(image_size=32, split='out_test', known_classes=[1,2,6,8,21,182])
-    print(dataset[-1][1])
+    dataset = getSVHNDataset(image_size=32, split='train', known_classes=[1,3,4,5,6,8])
     loader = DataLoader(dataset, batch_size=10, shuffle=True)
-    #mean, std = get_mean_and_std(loader)
-    #print(mean, std)
+    mean, std = get_mean_and_std(loader)
+    print(mean, std)
     data, target = next(iter(loader))
-    print(target)
+    print(data.shape)
     #print(data[0][2][14][14])
 
 
