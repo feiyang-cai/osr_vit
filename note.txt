@@ -11,6 +11,7 @@ detector: nohup python -u ./train_detector_batch.py --dataset MNIST > MNIST_dete
 
 SVHN
 classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset SVHN > SVHN_classifier.log & disown
+detector: nohup python -u ./train_detector_batch.py --dataset SVHN > SVHN_detector.log & disown 
 
 cifar 10
 classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset CIFAR10 > CIFAR10_classifier.log & disown

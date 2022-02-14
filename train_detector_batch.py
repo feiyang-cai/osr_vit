@@ -12,6 +12,8 @@ parser.add_argument("--num-classes", type=int, default=6, help="number of classe
 config = parser.parse_args()
 if config.dataset == "MNIST":
     random_seed = 42
+elif config.dataset == "SVHN":
+    random_seed = 7
 elif config.dataset == "CIFAR10":
     random_seed = 24
 elif config.dataset == "TinyImageNet":
@@ -22,7 +24,7 @@ else:
 random.seed(random_seed)
 seeds = random.sample(range(1000), 5)
 commands = []
-experiments_dir = '/home/cc/osr/experiments/save'#specify the root dir
+experiments_dir = os.path.join(os.getcwd(), 'experiments/save')#specify the root dir
 
 for seed in seeds:
     path = Path("./")
