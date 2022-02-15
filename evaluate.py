@@ -23,7 +23,7 @@ def parse_option():
     return opt
 
 def main(opt):
-    experiments_dir = '/home/cc/osr/experiments/save'#specify the root dir
+    experiments_dir = os.path.join(os.getcwd(), 'experiments/save')#specify the root dir
     best_acc_list = []
     cur_acc_list = []
     best_auroc_list = []
@@ -37,6 +37,7 @@ def main(opt):
             for json_file in os.listdir(json_dir):
                 _, ood_dataset, num_ood_classes = json_file.split("_")
                 if ood_dataset[3:] == opt.out_dataset and int(num_ood_classes[4:-5]) == opt.out_num_classes:
+                    print(json_dir)
                     with open(os.path.join(json_dir, json_file)) as f:
                         data = json.load(f)
                         if json_file.startswith("best"):

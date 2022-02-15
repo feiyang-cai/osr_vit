@@ -92,7 +92,7 @@ def main(opt, model):
     # load ID dataset
     print('load in target data: ', opt.in_dataset)
     random.seed(opt.random_seed)
-    if opt.in_dataset == "MNIST" or opt.in_dataset == "CIFAR10":
+    if opt.in_dataset == "MNIST" or opt.in_dataset == "SVHN" or opt.in_dataset == "CIFAR10":
         total_classes = 10
     elif opt.in_dataset == "CIFAR100":
         total_classes = 100
@@ -163,7 +163,7 @@ def main(opt, model):
     
 
 def run_ood_distance(opt):
-    experiments_dir = '/home/cc/osr/experiments/save'#specify the root dir
+    experiments_dir = os.path.join(os.getcwd(), 'experiments/save')#specify the root dir
     for dir in os.listdir(experiments_dir):
         exp_name, dataset, model_arch, _, _, _, num_classes, random_seed, _, _ = dir.split("_")
         opt = eval("get_{}_config".format(model_arch))(opt)
@@ -180,7 +180,6 @@ def run_ood_distance(opt):
                  )
         
         if opt.exp_name == exp_name and opt.in_dataset == dataset and opt.in_num_classes == int(num_classes[2:]):
-            print(opt.exp_name, opt.in_dataset, opt.in_num_classes)
             ckpt_dir = os.path.join(experiments_dir, dir, "checkpoints")
             for ckpt_file in os.listdir(ckpt_dir):
                 if ckpt_file.endswith(".pth"):
