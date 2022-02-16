@@ -138,6 +138,8 @@ def main(config, device, device_ids):
     for param in model.embedding.parameters():
         param.requires_grad = False
 
+    model.cls_token.requires_grad = False
+
     if config.dataset == "MNIST" or config.dataset == "SVHN" or config.dataset == "CIFAR10":
         total_classes = 10
     elif config.dataset == "TinyImageNet":
