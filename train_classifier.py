@@ -151,6 +151,12 @@ def main(config, device, device_ids):
         with open("src/cub_osr_splits.pkl", "rb") as f:
             splits = pickle.load(f)
             known_classes = splits['known_classes']
+    elif config.dataset == "FGVC":
+        total_classes = 100
+        import pickle
+        with open("src/aircraft_osr_splits.pkl", "rb") as f:
+            splits = pickle.load(f)
+            known_classes = splits['known_classes']
     else:
         random.seed(config.random_seed)
         if config.dataset == "MNIST" or config.dataset == "SVHN" or config.dataset == "CIFAR10":
