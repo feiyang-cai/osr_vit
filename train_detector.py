@@ -140,13 +140,21 @@ def main(config, device, device_ids):
 
     model.cls_token.requires_grad = False
 
-    if config.dataset == "MNIST" or config.dataset == "SVHN" or config.dataset == "CIFAR10":
-        total_classes = 10
-    elif config.dataset == "TinyImageNet":
+    if config.dataset == 'CUB':
         total_classes = 200
+        import pickle
+        with open("src/cub_osr_splits.pkl", "rb") as f:
+            splits = pickle.load(f)
+            known_classes = splits['known_classes']
+    else:
+        if config.dataset == "MNIST" or config.dataset == "SVHN" or config.dataset == "CIFAR10":
+            total_classes = 10
+        elif config.dataset == "TinyImageNet":
+            total_classes = 200
 
-    random.seed(config.random_seed)
-    known_classes = random.sample(range(0, total_classes), config.num_classes)
+        random.seed(config.random_seed)
+        known_classes = random.sample(range(0, total_classes), config.num_classes)
+
     train_dataset = eval("get{}Dataset".format(config.dataset))(image_size=config.image_size, split='train', data_path=config.data_dir, known_classes=known_classes)
     train_dataloader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=config.num_workers)
     valid_dataset = eval("get{}Dataset".format(config.dataset))(image_size=config.image_size, split='in_test', data_path=config.data_dir, known_classes=known_classes)

@@ -23,7 +23,7 @@ def parse_option():
     parser.add_argument("--data-dir", type=str, default='./data', help='data folder')
     parser.add_argument('--gpu', type=int, default=0, help='gpu index')
     parser.add_argument("--num-workers", type=int, default=8, help="number of workers")
-    parser.add_argument("--image-size", type=int, default=224, help="input image size", choices=[128, 160, 224, 384])
+    parser.add_argument("--image-size", type=int, default=224, help="input image size", choices=[128, 160, 224, 384, 448])
 
     opt = parser.parse_args()
 
@@ -89,34 +89,48 @@ def main(opt, model):
 
     # load ID dataset
     print('load in target data: ', opt.in_dataset)
-    random.seed(opt.random_seed)
-    if opt.in_dataset == "MNIST" or opt.in_dataset == "SVHN" or opt.in_dataset == "CIFAR10":
-        total_classes = 10
-    elif opt.in_dataset == "CIFAR100":
-        total_classes = 100
-    elif opt.in_dataset == "TinyImageNet":
-        total_classes = 200
+    if opt.in_dataset == "CUB":
+        import pickle
+        with open("src/cub_osr_splits.pkl", "rb") as f:
+            splits = pickle.load(f)
+            known_classes = splits['known_classes']
+            train_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='train', data_path=opt.data_dir, known_classes=known_classes)
+            in_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=known_classes)
 
-    known_classes = random.sample(range(0, total_classes), opt.in_num_classes)
-
-    train_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='train', data_path=opt.data_dir, known_classes=known_classes)
-    in_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=known_classes)
-
-    # load OOD dataset
-    print('load out target data: ', opt.out_dataset)
-    if opt.in_dataset == opt.out_dataset:
-        unknown_classes =  list(set(range(total_classes)) -  set(known_classes))
-        out_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='out_test', data_path=opt.data_dir, known_classes=known_classes)
+            unknown_classes = splits['unknown_classes'][opt.mode]
+            out_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=unknown_classes)
+            
+            
     else:
         random.seed(opt.random_seed)
-        if opt.out_dataset == "MNIST" or opt.out_dataset == "CIFAR10":
-            out_total_classes = 10
-        elif opt.out_dataset == "CIFAR100" :
-            out_total_classes = 100
-        elif opt.out_dataset == "TinyImageNet":
-            out_total_classes = 200
-        unknown_classes = random.sample(range(0, out_total_classes), opt.out_num_classes)
-        out_dataset = eval("get{}Dataset".format(opt.out_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=unknown_classes)
+        if opt.in_dataset == "MNIST" or opt.in_dataset == "SVHN" or opt.in_dataset == "CIFAR10":
+            total_classes = 10
+        elif opt.in_dataset == "CIFAR100":
+            total_classes = 100
+        elif opt.in_dataset == "TinyImageNet":
+            total_classes = 200
+
+        known_classes = random.sample(range(0, total_classes), opt.in_num_classes)
+
+        train_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='train', data_path=opt.data_dir, known_classes=known_classes)
+        in_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=known_classes)
+
+        # load OOD dataset
+        print('load out target data: ', opt.out_dataset)
+        if opt.in_dataset == opt.out_dataset:
+            unknown_classes =  list(set(range(total_classes)) -  set(known_classes))
+            out_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='out_test', data_path=opt.data_dir, known_classes=known_classes)
+        else:
+            random.seed(opt.random_seed)
+            if opt.out_dataset == "MNIST" or opt.out_dataset == "CIFAR10":
+                out_total_classes = 10
+            elif opt.out_dataset == "CIFAR100" :
+                out_total_classes = 100
+            elif opt.out_dataset == "TinyImageNet":
+                out_total_classes = 200
+            unknown_classes = random.sample(range(0, out_total_classes), opt.out_num_classes)
+            out_dataset = eval("get{}Dataset".format(opt.out_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=unknown_classes)
+
     test_data_len = min(len(in_dataset), len(out_dataset))
     random.seed(opt.random_seed)
     in_index = random.sample(range(len(in_dataset)), test_data_len)
@@ -130,6 +144,7 @@ def main(opt, model):
     out_dataloader = DataLoader(out_dataset, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_workers)
 
     print('Compute sample mean for training data....')
+
     train_emb, train_targets, train_sfmx = run_model(model,train_dataloader)
     train_acc = float(torch.sum(torch.argmax(train_sfmx, dim=1) == train_targets)) / len(train_sfmx)
 
@@ -184,7 +199,17 @@ def run_ood_distance(opt):
                     ckpt_file = os.path.join(ckpt_dir, ckpt_file)
                     opt.ckpt_file = ckpt_file
                     opt.random_seed = int(random_seed[2:])
-                    result = main(opt, model)
+
+                    if dataset == "CUB":
+                        result = dict()
+                        for mode in ["Easy", "Medium", "Hard"]:
+                            print(mode)
+                            opt.mode = mode
+                            sub_result = main(opt, model)
+                            result[mode] = sub_result
+
+                    else:
+                        result = main(opt, model)
                     result_path = os.path.join(experiments_dir, dir, "results", "best_ood{}_nood{}.json".format(opt.out_dataset, opt.out_num_classes) if "best" in ckpt_file else "current_ood{}_nood{}.json".format(opt.out_dataset, opt.out_num_classes))
                     write_json(result, result_path)
 

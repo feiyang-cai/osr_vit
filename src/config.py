@@ -10,7 +10,7 @@ def get_train_config():
     parser.add_argument("--tensorboard", default=False, action='store_true', help='flag of turnning on tensorboard')
     parser.add_argument("--model-arch", type=str, default="b16", help='model setting to use', choices=['t16','vs16','s16', 'b16', 'b32', 'l16', 'l32', 'h14'])
     parser.add_argument("--checkpoint-path", type=str, default=None, help="model checkpoint to load weights")
-    parser.add_argument("--image-size", type=int, default=384, help="input image size", choices=[128, 160, 224, 384])
+    parser.add_argument("--image-size", type=int, default=384, help="input image size", choices=[128, 160, 224, 384, 448])
     parser.add_argument("--batch-size", type=int, default=32, help="batch size")
     parser.add_argument("--num-workers", type=int, default=8, help="number of workers")
     parser.add_argument("--train-steps", type=int, default=10000, help="number of training/fine-tunning steps")
