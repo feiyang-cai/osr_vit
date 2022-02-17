@@ -125,7 +125,6 @@ def main(config, device, device_ids):
 
     # load checkpoint
     if config.checkpoint_path:
-        print(config.checkpoint_path)
         state_dict = load_checkpoint(config.checkpoint_path, new_img=config.image_size, emb_dim=config.emb_dim,
                                      layers= config.num_layers,patch=config.patch_size)
         print("Loading pretrained weights from {}".format(config.checkpoint_path))
