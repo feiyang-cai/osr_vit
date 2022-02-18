@@ -171,7 +171,7 @@ def main(config, device, device_ids):
 
     # training criterion
     print("create criterion and optimizer")
-    criterion = torch.nn.CrossEntropyLoss().to(device)
+    criterion = torch.nn.CrossEntropyLoss(label_smoothing=config.label_smoothing).to(device)
 
     # create optimizers and learning rate scheduler
     if config.opt =="AdamW":
