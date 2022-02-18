@@ -89,10 +89,16 @@ def main(opt, model):
 
     # load ID dataset
     print('load in target data: ', opt.in_dataset)
-    if opt.in_dataset == "CUB":
+    if opt.in_dataset == "CUB" or opt.in_dataset == "FGVC":
         import pickle
-        with open("src/cub_osr_splits.pkl", "rb") as f:
+        if opt.in_dataset == "CUB":
+            splits_file_path = "src/cub_osr_splits.pkl"
+        if opt.in_dataset == "FGVC":
+            splits_file_path = "src/aircraft_osr_splits.pkl"
+
+        with open(splits_file_path, "rb") as f:
             splits = pickle.load(f)
+
             known_classes = splits['known_classes']
             train_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='train', data_path=opt.data_dir, known_classes=known_classes)
             in_dataset = eval("get{}Dataset".format(opt.in_dataset))(image_size=opt.image_size, split='in_test', data_path=opt.data_dir, known_classes=known_classes)
@@ -195,12 +201,12 @@ def run_ood_distance(opt):
         if opt.exp_name == exp_name and opt.in_dataset == dataset and opt.in_num_classes == int(num_classes[2:]):
             ckpt_dir = os.path.join(experiments_dir, dir, "checkpoints")
             for ckpt_file in os.listdir(ckpt_dir):
-                if ckpt_file.endswith(".pth"):
+                if ckpt_file.endswith("best.pth") or ckpt_file.endswith("current.pth"):
                     ckpt_file = os.path.join(ckpt_dir, ckpt_file)
                     opt.ckpt_file = ckpt_file
                     opt.random_seed = int(random_seed[2:])
 
-                    if dataset == "CUB":
+                    if dataset == "CUB" or dataset == "FGVC":
                         result = dict()
                         for mode in ["Easy", "Medium", "Hard"]:
                             print(mode)

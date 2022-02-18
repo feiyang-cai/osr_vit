@@ -553,7 +553,7 @@ def getFGVCDataset(data_path='./data', **args):
     ])
 
     split = args['split']
-    data_split = 'train' if split=='train' else 'test'
+    data_split = 'trainval' if split=='train' else 'test'
     transform = train_transform if split=='train' else test_transform
 
     dataset = FGVCAircraft(root=data_path, split=data_split, transform=transform)
