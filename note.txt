@@ -8,6 +8,9 @@ python ./src/download_pretrained_model.py
 MNIST
 classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset MNIST > MNIST_classifier.log & disown
 detector: nohup python -u ./train_detector_batch.py --dataset MNIST > MNIST_detector.log & disown 
+python ./evaluate.py --exp-name osrclassifier --in-dataset MNIST --out-dataset MNIST --in-num-classes 6 --out-num-classes 4
+
+
 
 SVHN
 classifier: nohup python -u ./train_classifier_batch.py --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth --dataset SVHN > SVHN_classifier.log & disown
