@@ -31,7 +31,7 @@ The other datasets will be downloaded automatically if they are not existed in t
 
 ## Train
 <span style="color:green">
-"note.txt" contains the complete scripts of training and evaluating for each experiment.
+"scripts.txt" contains the complete scripts of training and evaluating for each experiment.
 </span>
 
 ### Stage 1 (Closed set training)
