@@ -89,12 +89,10 @@ def main(opt, model):
 
     # load ID dataset
     print('load in target data: ', opt.in_dataset)
-    if opt.in_dataset == "CUB" or opt.in_dataset == "FGVC":
+    if opt.in_dataset == "CUB":
         import pickle
         if opt.in_dataset == "CUB":
             splits_file_path = "src/cub_osr_splits.pkl"
-        if opt.in_dataset == "FGVC":
-            splits_file_path = "src/aircraft_osr_splits.pkl"
 
         with open(splits_file_path, "rb") as f:
             splits = pickle.load(f)
@@ -206,10 +204,9 @@ def run_ood_distance(opt):
                     opt.ckpt_file = ckpt_file
                     opt.random_seed = int(random_seed[2:])
 
-                    if dataset == "CUB" or dataset == "FGVC":
+                    if dataset == "CUB":
                         result = dict()
                         for mode in ["Easy", "Medium", "Hard"]:
-                            print(mode)
                             opt.mode = mode
                             sub_result = main(opt, model)
                             result[mode] = sub_result
