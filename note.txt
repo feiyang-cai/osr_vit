@@ -62,8 +62,3 @@ classifier: nohup python -u ./train_classifier.py --exp-name osrclassifier --n-g
 evaluate classifier and oodformer: python ./measure_oodformer.py --exp-name osrclassifier --in-dataset CUB --out-dataset CUB --in-num-classes 100 --out-num-classes -1 --image-size 448 --batch_size 8
 
 detector: nohup python -u ./train_detector.py --exp-name osrdetector --n-gpu 4 --tensorboard --image-size 448 --batch-size 64 --num-workers 16 --train-steps 4590 --lr 0.01 --wd 1e-5 --dataset CUB --num-classes 100 --random-seed 0 --checkpoint-path ./experiments/save/osrclassifier_CUB_b16_bs64_lr0.01_wd1e-05_nc100_rs0_220216_164049/checkpoints/ckpt_epoch_current.pth --random-seed 0 > CUB_detector.log & disown
-
-fgvc
-classifier: nohup python -u ./train_classifier.py --exp-name osrclassifier --n-gpu 4 --tensorboard --image-size 448 --batch-size 64 --num-workers 16 --train-steps 4590 --lr 0.01 --wd 1e-5 --dataset FGVC --num-classes 50 --random-seed 0 --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth > FGVC_classifier.log & disown
-
-
