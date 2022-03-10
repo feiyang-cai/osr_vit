@@ -38,7 +38,7 @@ The other datasets will be downloaded automatically if they are not existed in t
 Train only 1 random "known/unknown" split trial 
 
 ```
-python train_classifier.py --exp-name osrclassifier --n-gpu 4 --tensorboard --image-size 224 --batch-size 256 --num-workers 16 --train-steps 4590 --lr 0.01 --wd 1e-5 --dataset <known_dataset> --num-classes <num_of_known_classes> --random-seed <random_seed>
+python train_classifier.py --exp-name osrclassifier --n-gpu 4 --tensorboard --image-size 224 --batch-size 256 --num-workers 16 --train-steps 4590 --lr 0.01 --wd 1e-5 --dataset <known_dataset> --num-classes <num_of_known_classes> --random-seed <random_seed>  --checkpoint-path ./pretrained_model/imagenet21k+imagenet2012_ViT-B_16.pth
 ```
 
 Train 5 random "known/unknown" split trials
