@@ -2,9 +2,8 @@
 
 ## Getting Started
 This code repository includes the detailed instructions for reproducing experiments of MNIST, SVHN, CIFAR10, CIFAR+N, TinyImageNet, and CUB reported in the paper.
-Becuase the size of trained weights are too huge and the shareable link to these weights may lead to a compromise in anoymity, we decide to not share the trained models at this moment.
-We will share the code and weights in public once this paper is accepted.
-You can easily train your own models by running the code in this repository.
+
+This repository is still updating. We will provide our trained models in this repository later.
 
 All our experiments are performed in an 80-core Ubuntu Linux virtual machine with 128GB RAM and 4 Tesla V100 GPUs. 
 
@@ -21,11 +20,11 @@ conda activate osr
 ```
 
 ### Pretrained ViT model
-Download pretrained ViT-B/16 from this [[link](https://drive.google.com/file/d/1gEcyb4HUDzIvu7lQWTOyDC1X00YzCxFx/view?usp=sharing)] (this link will **not** lead to a compromise in anonymity)
+Download pretrained ViT-B/16 from this [[link](https://drive.google.com/file/d/1gEcyb4HUDzIvu7lQWTOyDC1X00YzCxFx/view?usp=sharing)]
 and put it in the folder of "./pretrained_model/"
 
 ### Datasets
-Download the TinyImageNet dataset from this [[link](https://drive.google.com/file/d/1oJe95WxPqEIWiEo8BI_zwfXDo40tEuYa/view)] (this link will **not** lead to a compromise in anonymity) and extract it in the folder of "./data/"
+Download the TinyImageNet dataset from this [[link](https://drive.google.com/file/d/1oJe95WxPqEIWiEo8BI_zwfXDo40tEuYa/view)] and extract it in the folder of "./data/"
 
 The other datasets will be downloaded automatically if they are not existed in the "./data/" folder.
 
@@ -64,3 +63,6 @@ Evaluate the trained model
 ```
 python ./measure_osrdetector.py --exp-name osrdetector --in-dataset <known_dataset> --out-dataset <unknown_dataset> --in-num-classes <num_of_known_classes> --out-num-classes <num_of_unknown_classes>
 ```
+
+## Trained Models
+We will provide our trained models in this repo later.
